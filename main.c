@@ -26,6 +26,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <errno.h>
+// Grove Temperature and Humidity Sensor
+#include "../MT3620_Grove_Shield/MT3620_Grove_Shield_Library/Grove.h"
+#include "../MT3620_Grove_Shield/MT3620_Grove_Shield_Library/Sensors/GroveTempHumiSHT31.h"
 
 // applibs_versions.h defines the API struct versions to use for applibs APIs.
 #include "applibs_versions.h"
@@ -34,10 +37,6 @@
 #include <applibs/gpio.h>
 #include <applibs/storage.h>
 #include <applibs/eventloop.h>
-
-// Grove Temperature and Humidity Sensor
-#include "../MT3620_Grove_Shield/MT3620_Grove_Shield_Library/Grove.h"
-#include "../MT3620_Grove_Shield/MT3620_Grove_Shield_Library/Sensors/GroveTempHumiSHT31.h"
 
 // By default, this sample targets hardware that follows the MT3620 Reference
 // Development Board (RDB) specification, such as the MT3620 Dev Kit from
@@ -170,6 +169,13 @@ int main(int argc, char *argv[])
         Log_Debug("Using Azure IoT DPS Scope ID %s\n", scopeId);
     } else {
         Log_Debug("ScopeId needs to be set in the app_manifest CmdArgs\n");
+        return -1;
+    }
+    int fd = GPIO_OpenAsOutput(9, GPIO_OutputMode_PushPull, GPIO_Value_High);
+    if (fd < 0) {
+        Log_Debug(
+            "Error opening GPIO: %s (%d). Check that app_manifest.json includes the GPIO used.\n",
+            strerror(errno), errno);
         return -1;
     }
 
